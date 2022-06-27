@@ -14,7 +14,7 @@
 <body>
     <div class="card uper">
     <div class="card-header">
-        Update Shows
+        Update Data
     </div>
     <div class="card-body">
         @if ($errors->any())
@@ -26,26 +26,36 @@
             </ul>
         </div><br />
         @endif
-        <form method="post" action="edit">
+        <form method="post" action="{{ route('shows.update', $show->id) }}" onSubmit="return confirm('Are you sure you wish to edit details?');">
             <div class="form-group">
                 @csrf
                 @method('PATCH')
-                <label for="name">Show Name:</label>
-                <input type="text" class="form-control" name="show_name" value="{{ $show->show_name }}"/>
+            <div class="form-group">
+            <label for="exampleInputEmail1">Full Name</label>
+            <input type="text" id="full_name" name="full_name" class="form-control" required="" pattern="[a-zA-Z'-'\s]*" maxlength="35" autocomplete="off" value="{{ $show->full_name }}">
+            <br>
             </div>
             <div class="form-group">
-                <label for="price">Show Genre :</label>
-                <input type="text" class="form-control" name="genre" value="{{ $show->genre }}"/>
+            <label for="exampleInputEmail1">Company Name</label>
+            <input type="text" id="company_name" name="company_name" class="form-control" required=""  maxlength="100" autocomplete="off" value="{{ $show->company_name }}">
+            <br>
             </div>
             <div class="form-group">
-                <label for="price">Show IMDB Rating :</label>
-                <input type="text" class="form-control" name="imdb_rating" value="{{ number_format($show->imdb_rating, 2) }}"/>
+            <label for="exampleInputEmail1">Email Id</label>
+            <input type="email" id="email_id" name="email_id" class="form-control" required="" autocomplete="off" value="{{ $show->email_id }}">
+            <br>
             </div>
             <div class="form-group">
-                <label for="quantity">Show Lead Actor :</label>
-                <input type="text" class="form-control" name="lead_actor" value="{{ $show->lead_actor }}"/>
+            <label for="exampleInputEmail1">Mobile No</label>
+            <input type="number" id="mobile_no" name="mobile_no" class="form-control" required="" maxlength="15" minlength="10" autocomplete="off" value="{{ $show->mobile_no }}">
+            <br>
             </div>
-            <button type="submit" class="btn btn-primary">Update Show</button>
+            <div class="form-group">
+            <label for="exampleInputEmail1">Query</label>
+            <textarea name="quer" id="quer" class="form-control" required="" maxlength="2000" autofocus autocomplete="off" > {{ $show->query }}</textarea>
+            <br>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Enquiry</button>
         </form>
     </div>
     </div>
