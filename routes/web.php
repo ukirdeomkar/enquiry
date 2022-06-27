@@ -18,7 +18,14 @@ Route::get('welcome', function () {
 Route::get('/', 'EnquiryController@index');
 Route::post('store-form','EnquiryController@store');
 Route::get('data', 'EnquiryController@show');
-Route::post('edit','EnquiryController@edit');
+// Route::get('edit/{id}',[ 'as' => 'shows.edit', 'uses' => 'EnquiryController@edit']);
+// Route::post('update',[ 'as' => 'shows.update', 'uses' => 'EnquiryController@show']);
+Route::resource('shows', 'EnquiryController');
+
+
+
+Route::post('update','EnquiryController@update');
+
 
 
 

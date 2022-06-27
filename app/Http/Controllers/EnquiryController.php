@@ -26,22 +26,28 @@ class EnquiryController extends Controller
         
         $messages=
         [
-            "full_name.required"=>"- Please enter full name. Max 35 characters allowed. - Numeric and special characters are not allowed. ",
-            "full_name.max"=>"- Please enter full name. Max 35 characters allowed. - Numeric and special characters are not allowed.",
-            "full_name.regex"=>"- Please enter full name. Max 35 characters allowed. - Numeric and special characters are not allowed.",
+            "full_name.required"=>"Please enter full name. Max 35 characters allowed. - Numeric and special characters are not allowed. ",
+            "full_name.max"=>"Please enter full name. Max 35 characters allowed. - Numeric and special characters are not allowed.",
+            "full_name.regex"=>"Please enter full name. Max 35 characters allowed. - Numeric and special characters are not allowed.",
 
-            "company_name.required"=>"- Please enter a company name. Max 100 characters allowed. Entering only special characters are not allowed.",
-            "company_name.alpha_num"=>"- Please enter a company name. Max 100 characters allowed. Entering only special characters are not allowed.",
-            "company_name.max"=>"- Please enter a company name. Max 100 characters allowed. Entering only special characters are not allowed.",
+            "company_name.required"=>"Please enter a company name. Max 100 characters allowed. Entering only special characters are not allowed.",
+            "company_name.alpha_num"=>"Please enter a company name. Max 100 characters allowed. Entering only special characters are not allowed.",
+            "company_name.max"=>"Please enter a company name. Max 100 characters allowed. Entering only special characters are not allowed.",
 
-            "email_id.required"=>"- Please enter valid email id.",
-            "email_id.email"=>"- Please enter valid email id.",
+            "mobile_no.required" => "The Mobile Number Must be between 10 to 15 Digits",
+            "mobile_no.max" => "The Mobile Number Must be between 10 to 15 Digits",
+            "mobile_no.min" => "The Mobile Number Must be between 10 to 15 Digits",
 
-            "ip_ack.accepted"=>"- Please accept the ip monitoring checkbox",
 
-            "terms_ack.accepted"=>"- Please accept the privacy policy & term of use checkbox.",
 
-            'quer.max'=> "- The Query should be at max 2000 digits",
+            "email_id.required"=>"Please enter valid email id.",
+            "email_id.email"=>"Please enter valid email id.",
+
+            "ip_ack.accepted"=>"Please accept the ip monitoring checkbox",
+
+            "terms_ack.accepted"=>"Please accept the privacy policy & term of use checkbox.",
+
+            'quer.max'=> "The Query should be at max 2000 digits",
 
 
         ];
@@ -62,7 +68,8 @@ class EnquiryController extends Controller
         if($validate->fails()){
             return redirect()->back()->withErrors($validate->messages())->withInput();
         }
-        $show = Enquiry::create($validate);
+
+        // $show = Enquiry::create($validate);
 
 
         $full_name = $request->full_name;
@@ -114,12 +121,74 @@ class EnquiryController extends Controller
 
         return view('data', compact('shows'));
     }
-
     public function edit($id)
     {
         $show = Enquiry::findOrFail($id);
 
         return view('edit', compact('show'));
+    }
+    public function update(Request $request, $id)
+    {
+
+        $messages=
+        [
+            "full_name.required"=>"- Please enter full name. Max 35 characters allowed. - Numeric and special characters are not allowed. ",
+            "full_name.max"=>"- Please enter full name. Max 35 characters allowed. - Numeric and special characters are not allowed.",
+            "full_name.regex"=>"- Please enter full name. Max 35 characters allowed. - Numeric and special characters are not allowed.",
+
+            "company_name.required"=>"- Please enter a company name. Max 100 characters allowed. Entering only special characters are not allowed.",
+            "company_name.alpha_num"=>"- Please enter a company name. Max 100 characters allowed. Entering only special characters are not allowed.",
+            "company_name.max"=>"- Please enter a company name. Max 100 characters allowed. Entering only special characters are not allowed.",
+
+            "email_id.required"=>"- Please enter valid email id.",
+            "email_id.email"=>"- Please enter valid email id.",
+
+            'quer.max'=> "- The Query should be at max 2000 digits",
+
+
+        ];
+
+        $rules = [
+            'full_name' => 'required|max:35|regex:/^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$/',
+            'company_name' => 'required|max:35|alpha_num',
+            'mobile_no' => 'required|min:10|max:15',
+            'quer' => 'max:2000',
+            'email_id'=>'email:rfc,dns',
+        ];
+
+        $validate =  Validator::make($request->all(),$rules,$messages);
+ 
+
+        if($validate->fails()){
+            return redirect()->back()->withErrors($validate->messages())->withInput();
+        }
+
+        $full_name = $request->full_name;
+        $company_name = $request->company_name;
+        $email_id = $request->email_id;
+        $mobile_no = $request->mobile_no;
+        $quer = $request->quer;
+        $page_path = parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+        $updated_at = Carbon::now()->toDateTimeString();
+
+        DB::select('call UpdateData(?,?,?,?,?,?,?,?)',array($full_name ,$company_name ,$email_id ,$mobile_no ,$quer ,$page_path ,$updated_at,$id));
+
+
+
+        // Enquiry::whereId($id)->update($validate);
+
+
+        return redirect('data')->with('success', 'Data is successfully updated ' );
+    }
+
+    public function destroy($id)
+    {
+            $show = Enquiry::findOrFail($id);
+            // $show->delete();
+            DB::select('call DeleteData(?)',array($id));
+
+
+            return redirect('data')->with('success', 'Data is successfully deleted');
     }
 
     public function getIp(){

@@ -54,8 +54,14 @@
                 <td>{{$show->browser_details}}</td>
                 <td>{{$show->created_at}}</td>
                 <td>{{$show->updated_at}}</td>
-                <td><a href="">Edit</a></td>
-                <td><a href="">Delete</a></td>
+                <td><a href="{{ route('shows.edit', $show->id)}}" class="btn btn-primary">Edit</a></td>
+                <td>
+                    <form action="{{ route('shows.destroy', $show->id)}}" method="post" onSubmit="return confirm('Are you sure you wish to Delete Data for id = {{$show->id}}?');">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>

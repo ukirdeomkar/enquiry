@@ -18,6 +18,15 @@
       Enquiry Form 
     </div>
     <div class="card-body">
+    @if ($errors->any())
+      <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+      </div><br />
+    @endif
       <form name="add-blog-post-form" id="add-blog-post-form" method="post" action="store-form" accept-charset="utf-8" autocomplete="off">
        @csrf
         <div class="form-group">
@@ -62,11 +71,7 @@
         <br>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
-      @if($errors->any())
-        <div class="m-auto text-center" style="color:red;">
-                {!! implode('', $errors->all('<div>:message</div>')) !!}
-        </div>
-      @endif
+
     </div>
   </div>
 </div>  
